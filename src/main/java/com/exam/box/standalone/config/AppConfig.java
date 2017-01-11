@@ -6,19 +6,21 @@ import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @EnableTransactionManagement  //replace to <tx:*>
 @ComponentScan(
-      basePackages="com.exam", 
-      excludeFilters= @ComponentScan.Filter(Controller.class))
+      basePackages="com.exam.box", 
+      excludeFilters= {@ComponentScan.Filter(Controller.class),@ComponentScan.Filter(Service.class)})
 public class AppConfig {
 
   @Bean(destroyMethod="shutdown")
@@ -42,6 +44,7 @@ public class AppConfig {
   }
   **/
   
+  /**
   @Bean
   public JdbcTemplate jdbcTemplate() {
     return new JdbcTemplate(dataSource());
@@ -50,5 +53,31 @@ public class AppConfig {
   @Bean
   public PlatformTransactionManager platformTransactionManager() {
     return new DataSourceTransactionManager(dataSource());
-  } 
+  }   
+  **/
+  
+  @Bean
+  public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
+    em.setJpaVendorAdapter(hibernateJpaVendorAdapter());
+    em.setDataSource(dataSource());
+    em.setPackagesToScan("com.exam.box.standalone.domain");
+
+    return em;
+  }
+  
+  @Bean
+  public HibernateJpaVendorAdapter hibernateJpaVendorAdapter() {
+      HibernateJpaVendorAdapter hibernateJpaVendorAdapter = new HibernateJpaVendorAdapter();
+      hibernateJpaVendorAdapter.setShowSql(true);
+      return hibernateJpaVendorAdapter;
+  }
+  
+
+  @Bean
+  public PlatformTransactionManager transactionManager() {
+    JpaTransactionManager jpaTransactionManager = new JpaTransactionManager(entityManagerFactory().getObject());
+    jpaTransactionManager.setDataSource(dataSource());
+    return jpaTransactionManager;
+  }
 }

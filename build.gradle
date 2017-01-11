@@ -14,12 +14,6 @@ ext {
   springframeworkVersion = "4.2.5.RELEASE"
   springframeworkBatchVersion = "3.0.6.RELEASE"
   springframeworkSecurityVersion = "4.0.4.RELEASE"
-  hibernateJpaVersion        = '1.0.1.Final'
-  hibernateEntitymanagerVersion = '4.1.9.Final'
-  hibernateCommonsAnnotationsVersion = '4.0.1.Final'
-  hibernateValidatorVersion = '4.3.1.Final'
-  queryDslVersion = '3.2.0'
-  springDataJpaVersion = '1.8.0.RELEASE'
 }
 
 sourceCompatibility = compatibilityVersion
@@ -122,13 +116,17 @@ dependencies {
   compile group: 'org.springframework.security', name: 'spring-security-web', version: springframeworkSecurityVersion
   compile group: 'org.springframework.security', name: 'spring-security-taglibs', version: springframeworkSecurityVersion
   compile group: 'org.springframework.security', name: 'spring-security-config', version: springframeworkSecurityVersion
-  		
+
+	//h2	
+  compile group: 'com.h2database', name: 'h2', version: '1.4.193'
+    		
   //jpa
-  //compile "org.springframework.data:spring-data-jpa:" + springDataJpaVersion
-  //runtime('com.h2database:h2')
-  compile "com.h2database:h2:1.4.193"
-  compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
-  //compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.3.4.Final'
+	//compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.0.M1'
+	compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.6.RELEASE'
+	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.5.Final'
+  compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.3.4.Final'
+	compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+  
   //compile "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:" + hibernateJpaVersion
   //compile "org.hibernate:hibernate-entitymanager:" + hibernateEntitymanagerVersion
   //compile "org.hibernate.common:hibernate-commons-annotations:" + hibernateCommonsAnnotationsVersion

@@ -5,6 +5,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRegistration;
 
+import org.h2.server.web.WebServlet;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -39,6 +40,12 @@ public class WebStdInitializer implements WebApplicationInitializer {
     FilterRegistration.Dynamic filter =  servletContext.addFilter("encodingFilter", CharacterEncodingFilter.class);
     filter.setInitParameter("encoding", "utf-8");
     filter.addMappingForServletNames(null, false, "dispatcher");
+    
+    //add h2 console
+    WebServlet h2ConsoleServlet = new WebServlet();
+    ServletRegistration.Dynamic h2Servlet = servletContext.addServlet("h2Servlet", h2ConsoleServlet);
+    h2Servlet.setLoadOnStartup(2);
+    h2Servlet.addMapping("/consloe/**");
   }
 
 }

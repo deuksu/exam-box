@@ -13,9 +13,9 @@ import org.springframework.web.servlet.view.JstlView;
 @Configuration
 @EnableWebMvc //replace to <mvc:annotation-driven>
 @ComponentScan(
-    basePackages = "com.exam",
+    basePackages = "com.exam.box",
     useDefaultFilters = false,
-    includeFilters = { @ComponentScan.Filter(Controller.class) }) //, @ComponentScan.Filter(Service.class)
+    includeFilters = { @ComponentScan.Filter(Controller.class), @ComponentScan.Filter(Service.class) })
 public class WebConfig {
 
   @Bean
