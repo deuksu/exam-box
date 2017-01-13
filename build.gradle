@@ -58,8 +58,6 @@ allprojects {
     ext.profile = DEFAULT_PROFILE
   }
   
-  //source dir에 자동 추가	
-  /*
   sourceSets {
     main {
       resources {
@@ -67,11 +65,11 @@ allprojects {
       }
     }
   }
-  */
+
   eclipse {
     classpath {
       //default settings for downloading sources and Javadoc:
-      //downloadJavadoc = false
+      downloadJavadoc = false
       downloadSources = true
       
       defaultOutputDir = file("${buildDir}/classes/main")
@@ -123,8 +121,8 @@ dependencies {
   //jpa
 	//compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.0.M1'
 	compile group: 'org.springframework.data', name: 'spring-data-jpa', version: '1.10.6.RELEASE'
-	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.2.5.Final'
-  compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.3.4.Final'
+	compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: '5.1.3.Final'
+  	compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.1.3.Final'
 	compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
   
   //compile "org.hibernate.javax.persistence:hibernate-jpa-2.0-api:" + hibernateJpaVersion
