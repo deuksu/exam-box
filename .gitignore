@@ -1,13 +1,10 @@
-# gradle project ignore 설정
-/.gradle/
-/.settings/
-/bin/
-/target/
+# gradle project ignore
+.gradle/
+.settings/
+.idea/
 /build/
-/classes/
-/caches/
-/lib/
+/bin/
+/gradle/
 /logs/
-/wrapper/
 .classpath
 .project
