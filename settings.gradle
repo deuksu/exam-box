@@ -16,4 +16,4 @@ include 'api'
 include 'services:webservice'
 */
 
-rootProject.name = 'exam-box'
+rootProject.name = 'exam-security'

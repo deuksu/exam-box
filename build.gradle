@@ -3,13 +3,13 @@ apply plugin: 'eclipse-wtp'	//apply plugin: "eclipse" 자동 포함
 apply plugin: 'idea'
 apply plugin: 'war'
 
-group = 'com.exam.box'
+group = 'com.exam.security'
 version = '0.1-SNAPSHOT'
-description = "exam-box"
+description = "exam-security"
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 ext {
-  appName = 'exam-box'
+  appName = 'exam-security'
   compatibilityVersion = 1.8
   springframeworkVersion = "4.2.5.RELEASE"
   springframeworkBatchVersion = "3.0.6.RELEASE"
