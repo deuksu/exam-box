@@ -1,22 +1,13 @@
+# gradle project ignore 설정
+/.gradle/
 /.settings/
-/target/
 /bin/
-/lib/
-/.idea/
+/target/
 /build/
 /classes/
 /caches/
-/daemon/
-/native/
-/.vertx/
-/.gradle/
+/lib/
 /logs/
 /wrapper/
-/src/main/webapp/resources/img
-/src/main/webapp/resources/attached/community/
-/src/main/webapp/META-INF/context.xml
-/gradle/wrapper/gradle-wrapper.properties
 .classpath
 .project
-.springBeans
-*.DS_Store
