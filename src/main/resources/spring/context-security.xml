@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:sc="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+        
+	<!--
+		http :: HttpSecurity
+		- auto-config="true" :: default option 적용
+		- entry-point-ref :: ExceptionTranslationFilter override, 초기 로그인 없이 url 접근 시expection 처리
+	 -->	        
+	<sc:http auto-config="true" entry-point-ref="authenticationEntryPointWrapper">
+    <!-- autentication url -->
+		<sc:intercept-url pattern="/hello*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+		<sc:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')"/>
+    <sc:intercept-url pattern="/**" access="permitAll"/>
+		
+		<!-- 
+			login
+			- login-processing-url :: 내부적으로 처리되는 url로 controller에서 정의하지 않는다. 단, form-login.action 명시
+		-->
+		<sc:form-login
+			login-page="/login.do" 
+			default-target-url="/hello.do"
+			always-use-default-target="true"
+			username-parameter="username"
+			password-parameter="password"
+			login-processing-url="/login.do"
+			authentication-success-handler-ref="loginSuccessHandler"
+			authentication-failure-handler-ref="loginFailureHandler"			
+			/>
+			
+		<!--
+			logout 
+			- logout-url :: for logout, default url = /j_spring_security_logout
+			- success-handler-ref="logoutSuccessHandler"
+			- invalidate-session :: logout시에 기존 세션을 무효화 처리할지여부, default = true
+		 -->		
+		<sc:logout 
+			logout-url="j_spring_security_logout" 
+			logout-success-url="/login.do?logout=1"
+			invalidate-session="true"
+			delete-cookies="JSESSIONID,SPRING_SECURITY_REMEMBER_ME_COOKIE"/>
+			
+		<!-- ssl이 아닌경우 disable = true  -->
+		<sc:csrf disabled="true"/>
+		
+<!-- 		<sc:anonymous /> 
+		<sc:x509/> 
+		<sc:http-basic /> 
+		<sc:session-management invalid-session-url="/invalidSession.htm"/>
+		<sc:expression-handler ref=""/> 
+		<sc:custom-filter ref=""/> 
+		<sc:port-mappings/> 
+		<sc:request-cache ref=""/> 
+		<sc:remember-me/> -->
+ 
+ 		<!-- 
+ 			session
+ 			- 세션타임아웃 
+ 			- 동시 로그인 blocking :: error-if-maximum-exceeded="false"
+ 		 -->
+		<sc:session-management invalid-session-url="/invalidSessionUrl.do">
+			<sc:concurrency-control max-sessions="1" error-if-maximum-exceeded="false" />
+		</sc:session-management>
+ 
+		<!-- 
+			remember me
+			- key :: default secureRandom
+			- token-validity-seconds :: 1 week
+			- authentication-success-handler-ref="loginSuccessHandler"
+		 -->
+<!-- 		<sc:remember-me 
+			key="exam-security" 
+			token-validity-seconds="604800" 
+			remember-me-parameter="remember-me"
+			authentication-success-handler-ref="loginSuccessHandler"/> -->
+		
+		<!-- 
+			access-denied-handler
+			- 로그인 후 권한없는 url 접근인 경우
+			- 단순 redirect인 경우는 error-page 속성을 사용
+		 -->	
+		<sc:access-denied-handler  ref="accessDeniedHandlerWrapper"/>
+		
+		
+	<!-- 
+	- FIRST
+	- CHANNEL_FILTER
+	- SECURITY_CONTEXT_FILTER
+	- CONCURRENT_SESSION_FILTER
+	- WEB_ASYNC_MANAGER_FILTER
+	- HEADERS_FILTER
+	- CSRF_FILTER
+	- LOGOUT_FILTER
+	- X509_FILTER
+	- PRE_AUTH_FILTER
+	- CAS_FILTER
+	- FORM_LOGIN_FILTER
+	- OPENID_FILTER
+	- LOGIN_PAGE_FILTER
+	- DIGEST_AUTH_FILTER
+	- BASIC_AUTH_FILTER
+	- REQUEST_CACHE_FILTER
+	- SERVLET_API_SUPPORT_FILTER
+	- JAAS_API_SUPPORT_FILTER
+	- REMEMBER_ME_FILTER
+	- ANONYMOUS_FILTER
+	- SESSION_MANAGEMENT_FILTER
+	- EXCEPTION_TRANSLATION_FILTER
+	- FILTER_SECURITY_INTERCEPTOR
+	- SWITCH_USER_FILTER
+	- LAST
+	 -->
+	 		
+<!-- 	
+			sc:custom-filter
+			- position :: filter position -->
+<!-- 		<sc:custom-filter position="CONCURRENT_SESSION_FILTER" ref="customConcurrentSessionFilter"/> -->
+		
+		<!-- Adds social authentication filter to the Spring Security filter chain. -->
+		<!-- <sc:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER"/> -->
+		<!-- <sc:custom-filter position="FORM_LOGIN_FILTER" ref="SecurityAuthFilter"/> -->
+		
+	</sc:http>
+
+
+	<!-- social login filter which is a pre authentication filter and works for /auth service url -->
+<!-- 	<bean id="socialAuthenticationFilter" class="org.springframework.social.security.SocialAuthenticationFilter">
+	    <constructor-arg name="authManager" ref="authenticationManager"/>
+	    <constructor-arg name="userIdSource" ref="userIdSource"/>
+	    <constructor-arg name="usersConnectionRepository" ref="inMemoryUsersConnectionRepository"/>
+	    <constructor-arg name="authServiceLocator" ref="appSocialAuthenticationServiceRegistry"/>
+	    <property name="authenticationSuccessHandler" ref="successHandler"/>
+	</bean> -->
+    
+  <!-- inmemory connection repository which holds connection repository per local user -->
+<!--   <bean id="inMemoryUsersConnectionRepository"
+        class="org.springframework.social.connect.mem.InMemoryUsersConnectionRepository">
+      <constructor-arg name="connectionFactoryLocator" ref="appSocialAuthenticationServiceRegistry"/>
+      <property name="connectionSignUp" ref="connectionSignUp"/>
+  </bean> -->
+
+  <!-- service registry will holds connection factory of each social provider -->
+<!--   <bean id="appSocialAuthenticationServiceRegistry"
+        class="com.spring.security.social.login.example.registry.AppSocialAuthenticationServiceRegistry">
+      <constructor-arg>
+          <list>
+              <ref bean="facebookAuthenticationService"/>
+              <ref bean="twitterAuthenticationService" />
+              <ref bean="linkedInAuthenticationService"/>
+          </list>
+      </constructor-arg>
+  </bean> -->
+
+<!--   <bean id="facebookAuthenticationService"
+        class="org.springframework.social.facebook.security.FacebookAuthenticationService">
+      <constructor-arg name="apiKey" value="#{config['exam.provider.facebook.api.key']}"/>
+      <constructor-arg name="appSecret" value="#{config['exam.provider.facebook.api.secret']}"/>
+  </bean>
+
+  <bean id="twitterAuthenticationService"
+        class="org.springframework.social.twitter.security.TwitterAuthenticationService">
+      <constructor-arg name="apiKey" value="#{config['exam.provider.twitter.api.key']}"/>
+      <constructor-arg name="appSecret" value="#{config['exam.provider.twitter.api.secret']}"/>
+  </bean> -->
+
+<!--   <bean id="linkedInAuthenticationService"
+        class="org.springframework.social.linkedin.security.LinkedInAuthenticationService">
+      <constructor-arg name="apiKey" value="${linkedin.api.key}"/>
+      <constructor-arg name="appSecret" value="${linkedin.api.secret}"/>
+  </bean> -->
+
+<!--   <bean id="userIdSource" class="org.springframework.social.security.AuthenticationNameUserIdSource"/> -->
+
+  <!-- If no local user is associated to a social connection then connection sign up will create a new local user and map it to social user -->
+<!--   <bean id="connectionSignUp" class="com.spring.security.social.login.example.registry.AppConnectionSignUp"/> -->
+  
+  
+        
+	<bean id="authenticationEntryPointWrapper" class="com.exam.security.handler.AuthenticationEntryPointWrapper"/>
+	<bean id="accessDeniedHandlerWrapper" class="com.exam.security.handler.AccessDeniedHandlerWrapper"/>
+	<bean id="loginSuccessHandler" class="com.exam.security.handler.LoginSuccessHandler"/>
+	<bean id="loginFailureHandler" class="com.exam.security.handler.LoginFailureHandler"/>
+	
+	<!-- <sc:authentication-manager>
+		<sc:authentication-provider>
+			<sc:user-service>
+				<sc:user name="jimi" password="jimi" authorities="ROLE_USER,ROLE_AMDIN"/>
+				<sc:user name="bob" password="bob" authorities="ROLE_USER"/>
+			</sc:user-service>		
+		</sc:authentication-provider>
+	</sc:authentication-manager> -->
+
+<!-- 	<bean id="socialAuthenticationProvider" class="org.springframework.social.security.SocialAuthenticationProvider">
+		<constructor-arg ref="inMemoryUsersConnectionRepository"/>
+		<constructor-arg ref="socialUserDetailService"/>
+	</bean> -->
+    
+	<bean id="securityUserDetailsServiceImpl" class="com.exam.security.service.impl.SecurityUserDetailsServiceImpl"/>
+  <bean id="securityPasswordEncoder" 				class="com.exam.security.handler.SecurityPasswordEncoder"/>		
+	<sc:authentication-manager alias="authenticationManager">
+		<!-- 1. id/pwd provider :: default DaoAuthenticationProvider -->
+		<sc:authentication-provider user-service-ref="securityUserDetailsServiceImpl">
+			<sc:password-encoder ref="securityPasswordEncoder"/>
+		</sc:authentication-provider>
+		<!-- <sc:authentication-provider ref="socialAuthenticationProvider"/> -->
+	</sc:authentication-manager>	
+	
+</beans>

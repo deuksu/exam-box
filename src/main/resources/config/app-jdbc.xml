@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>exam-security jdbc key-value</comment>
+
+  <entry key="exam.datasource.driver.class">org.mariadb.jdbc.Driver</entry>
+  <entry key="exam.datasource.url">jdbc:mariadb://localhost:3306/exam-security</entry>
+  <entry key="exam.datasource.username">root</entry>
+  <entry key="exam.datasource.password">0945</entry>
+</properties>

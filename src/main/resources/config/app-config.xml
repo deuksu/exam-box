@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+  <comment>exam-security app key-value</comment>
+
+  <entry key="exam.security.project.name">exam-security</entry>
+	
+	<!-- facebook provider :: lc.deuksu.com:8080 -->
+  <entry key="exam.provider.facebook.api.key">367189380304765</entry>
+	<entry key="exam.provider.facebook.api.secret">c88955724a48e46bf75ef948dcb1c19f</entry>
+
+	<!-- twitter provider -->
+  <entry key="exam.provider.twitter.api.key">kBcdXhCEQcTE8wz5zxliQCJX6</entry>
+	<entry key="exam.provider.twitter.api.secret">6qiXptqIR1rHyWirlK1Alrk2FXiccyOk0dc2paZRUyjkJqI1IL</entry>
+	
+	<!-- linkedin provider-->
+  <entry key="exam.provider.linkedin.api.key">75ileo93c5xmr5</entry>
+	<entry key="exam.provider.linkedin.api.secret">pUdw0kH9ggnj9QQE</entry>
+		
+</properties>
