@@ -31,12 +31,12 @@
                     </div>  
                     <div class="clear"></div>   
                 </form>
-                <c:url value="../services/signup" var="signupurl" />`
+<%--                 <c:url value="../services/signup" var="signupurl" />` --%>
             <div class="account">
-                <h2><a href="${signupurl}">Don't have an account? Sign Up!</a></h2>
+                <%-- <h2><a href="${signupurl}">Don't have an account? Sign Up!</a></h2> --%>
+                <!-- ?scope=email,user_about_me,user_birthday -->
                 <div class="span">
-                    <form name='facebookSocialloginForm'
-                      action="<c:url value='../auth/facebook?scope=email,user_about_me,user_birthday' />" method='POST'>
+                    <form name='facebookSocialloginForm' action="<c:url value='/facebook/login' />" method='POST'>
                             <img src="../images/facebook.png" alt="">
                             <button type="submit">
                                 <i>Sign In with Facebook</i>
@@ -44,7 +44,7 @@
                             <div class="clear"></div>
                     </form>     
                 </div>  
-                <div class="span1">
+<%--                 <div class="span1">
                     <form name='TwitterSocialloginForm'
                       action="<c:url value='../auth/twitter?scope=email,user_about_me,user_birthday' />" method='POST'>
                         <img src="../images/twitter.png" alt="">
@@ -63,7 +63,7 @@
                         </button>   
                         <div class="clear"></div>
                     </form>
-                </div>
+                </div> --%>
             </div>  
             <div class="clear"></div>   
         </div>

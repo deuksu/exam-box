@@ -2,20 +2,27 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:sc="http://www.springframework.org/schema/security"
+       xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
        xsi:schemaLocation="
         http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/security
-        http://www.springframework.org/schema/security/spring-security.xsd">
+        http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/security/oauth2 
+        http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd">
+        
         
 	<!--
 		http :: HttpSecurity
 		- auto-config="true" :: default option 적용
 		- entry-point-ref :: ExceptionTranslationFilter override, 초기 로그인 없이 url 접근 시expection 처리
-	 -->	        
+	 -->	
+	<sc:http pattern="/static/**" security="none"/>
+	<sc:http pattern="/favicon.ico" security="none"/>
+	
 	<sc:http auto-config="true" entry-point-ref="authenticationEntryPointWrapper">
     <!-- autentication url -->
-		<sc:intercept-url pattern="/hello*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER')"/>
+		<sc:intercept-url pattern="/hello*" access="hasAnyRole('ROLE_ADMIN','ROLE_USER','ROLE_FACEBOOK')"/>
 		<sc:intercept-url pattern="/user/**" access="hasAnyRole('ROLE_ADMIN')"/>
     <sc:intercept-url pattern="/**" access="permitAll"/>
 		
@@ -24,7 +31,7 @@
 			- login-processing-url :: 내부적으로 처리되는 url로 controller에서 정의하지 않는다. 단, form-login.action 명시
 		-->
 		<sc:form-login
-			login-page="/login.do" 
+			login-page="/sinlogin.do" 
 			default-target-url="/hello.do"
 			always-use-default-target="true"
 			username-parameter="username"
@@ -123,84 +130,16 @@
 <!-- 		<sc:custom-filter position="CONCURRENT_SESSION_FILTER" ref="customConcurrentSessionFilter"/> -->
 		
 		<!-- Adds social authentication filter to the Spring Security filter chain. -->
-		<!-- <sc:custom-filter ref="socialAuthenticationFilter" before="PRE_AUTH_FILTER"/> -->
-		<!-- <sc:custom-filter position="FORM_LOGIN_FILTER" ref="SecurityAuthFilter"/> -->
-		
+		<sc:custom-filter ref="facebookAuthenticationProcessingFilter" 	before="FILTER_SECURITY_INTERCEPTOR" />
+		<sc:custom-filter ref="oauth2ClientContextFilter" 							after="EXCEPTION_TRANSLATION_FILTER" />
+		    			
 	</sc:http>
 
-
-	<!-- social login filter which is a pre authentication filter and works for /auth service url -->
-<!-- 	<bean id="socialAuthenticationFilter" class="org.springframework.social.security.SocialAuthenticationFilter">
-	    <constructor-arg name="authManager" ref="authenticationManager"/>
-	    <constructor-arg name="userIdSource" ref="userIdSource"/>
-	    <constructor-arg name="usersConnectionRepository" ref="inMemoryUsersConnectionRepository"/>
-	    <constructor-arg name="authServiceLocator" ref="appSocialAuthenticationServiceRegistry"/>
-	    <property name="authenticationSuccessHandler" ref="successHandler"/>
-	</bean> -->
-    
-  <!-- inmemory connection repository which holds connection repository per local user -->
-<!--   <bean id="inMemoryUsersConnectionRepository"
-        class="org.springframework.social.connect.mem.InMemoryUsersConnectionRepository">
-      <constructor-arg name="connectionFactoryLocator" ref="appSocialAuthenticationServiceRegistry"/>
-      <property name="connectionSignUp" ref="connectionSignUp"/>
-  </bean> -->
-
-  <!-- service registry will holds connection factory of each social provider -->
-<!--   <bean id="appSocialAuthenticationServiceRegistry"
-        class="com.spring.security.social.login.example.registry.AppSocialAuthenticationServiceRegistry">
-      <constructor-arg>
-          <list>
-              <ref bean="facebookAuthenticationService"/>
-              <ref bean="twitterAuthenticationService" />
-              <ref bean="linkedInAuthenticationService"/>
-          </list>
-      </constructor-arg>
-  </bean> -->
-
-<!--   <bean id="facebookAuthenticationService"
-        class="org.springframework.social.facebook.security.FacebookAuthenticationService">
-      <constructor-arg name="apiKey" value="#{config['exam.provider.facebook.api.key']}"/>
-      <constructor-arg name="appSecret" value="#{config['exam.provider.facebook.api.secret']}"/>
-  </bean>
-
-  <bean id="twitterAuthenticationService"
-        class="org.springframework.social.twitter.security.TwitterAuthenticationService">
-      <constructor-arg name="apiKey" value="#{config['exam.provider.twitter.api.key']}"/>
-      <constructor-arg name="appSecret" value="#{config['exam.provider.twitter.api.secret']}"/>
-  </bean> -->
-
-<!--   <bean id="linkedInAuthenticationService"
-        class="org.springframework.social.linkedin.security.LinkedInAuthenticationService">
-      <constructor-arg name="apiKey" value="${linkedin.api.key}"/>
-      <constructor-arg name="appSecret" value="${linkedin.api.secret}"/>
-  </bean> -->
-
-<!--   <bean id="userIdSource" class="org.springframework.social.security.AuthenticationNameUserIdSource"/> -->
-
-  <!-- If no local user is associated to a social connection then connection sign up will create a new local user and map it to social user -->
-<!--   <bean id="connectionSignUp" class="com.spring.security.social.login.example.registry.AppConnectionSignUp"/> -->
-  
-  
-        
 	<bean id="authenticationEntryPointWrapper" class="com.exam.security.handler.AuthenticationEntryPointWrapper"/>
 	<bean id="accessDeniedHandlerWrapper" class="com.exam.security.handler.AccessDeniedHandlerWrapper"/>
 	<bean id="loginSuccessHandler" class="com.exam.security.handler.LoginSuccessHandler"/>
 	<bean id="loginFailureHandler" class="com.exam.security.handler.LoginFailureHandler"/>
 	
-	<!-- <sc:authentication-manager>
-		<sc:authentication-provider>
-			<sc:user-service>
-				<sc:user name="jimi" password="jimi" authorities="ROLE_USER,ROLE_AMDIN"/>
-				<sc:user name="bob" password="bob" authorities="ROLE_USER"/>
-			</sc:user-service>		
-		</sc:authentication-provider>
-	</sc:authentication-manager> -->
-
-<!-- 	<bean id="socialAuthenticationProvider" class="org.springframework.social.security.SocialAuthenticationProvider">
-		<constructor-arg ref="inMemoryUsersConnectionRepository"/>
-		<constructor-arg ref="socialUserDetailService"/>
-	</bean> -->
-    
 	<bean id="securityUserDetailsServiceImpl" class="com.exam.security.service.impl.SecurityUserDetailsServiceImpl"/>
   <bean id="securityPasswordEncoder" 				class="com.exam.security.handler.SecurityPasswordEncoder"/>		
 	<sc:authentication-manager alias="authenticationManager">
@@ -208,7 +147,44 @@
 		<sc:authentication-provider user-service-ref="securityUserDetailsServiceImpl">
 			<sc:password-encoder ref="securityPasswordEncoder"/>
 		</sc:authentication-provider>
-		<!-- <sc:authentication-provider ref="socialAuthenticationProvider"/> -->
+		<sc:authentication-provider ref="facebookAuthenticationProvider"/>
 	</sc:authentication-manager>	
 	
+
+	<!-- Facebook OAuth 2.0 Client Setup -->
+	<oauth:resource id="facebookResource" type="authorization_code" 
+				client-id="#{config['facebook.clientId']}" 
+				client-secret="#{config['facebook.clientSecret']}"
+				access-token-uri="#{config['facebook.accessTokenUri']}"
+				user-authorization-uri="#{config['facebook.userAuthorizationUri']}"
+				scope="#{config['facebook.scope']}"
+				authentication-scheme="query" 
+				token-name="oauth_token" 
+				pre-established-redirect-uri="/"
+				client-authentication-scheme="form" />
+
+	<!-- Facebook 서버에 접속하기 위한 RestTemplate -->	
+	<oauth:rest-template resource="facebookResource" id="facebookRestTemplate" />
+	
+	<!-- OAuth 2.0 Client를 연동 시키기 위한 Filter 생성 -->
+	<oauth:client id="oauth2ClientContextFilter"/>
+	
+	<!-- Facebook 에서 데이터를 가져 오기 위한 Service -->
+	<bean id="facebookService" class="com.exam.security.facebook.service.impl.FacebookServiceImpl">
+		<constructor-arg name="facebookRestTemplate" 	ref="facebookRestTemplate"/>
+		<constructor-arg name="facebookProfileUri" 		value="#{config['facebook.profileUri']}" />
+	</bean>
+	    
+	<bean id="facebookAuthenticationProcessingFilter" class="com.exam.security.facebook.filter.FacebookAuthenticationProcessingFilter">
+		<constructor-arg name="defaultFilterProcessesUrl" value="/facebook/login"/>
+		<!-- AbstractAuthenticationProcessingFilter.setAuthenticationManager -->
+		<property name="authenticationManager" ref="authenticationManager"/>
+	</bean>
+	
+	<bean id="facebookAuthenticationProvider" class="com.exam.security.facebook.FacebookAuthenticationProvider">
+		<constructor-arg name="facebookService" ref="facebookService"/>
+		<constructor-arg name="facebookRole" value="ROLE_FACEBOOK"/>
+	</bean>   
+	
+		
 </beans>
