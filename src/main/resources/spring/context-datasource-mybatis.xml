@@ -25,7 +25,6 @@
   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
     <property name="basePackage" value="com.exam.security.mybatis.mapper"/>
     <property name="sqlSessionFactoryBeanName" value="myBatisSqlSessionFactory" />
-    <property name="sqlSessionTemplateBeanName" value="myBatisSqlSessionTemplate"/>
     <!-- <property name="nameGenerator" ref="FQDNBeanNameGenerator"/> -->
   </bean>
 
@@ -37,9 +36,9 @@
   </bean>
 
   <!--  mybatis sqlSessionTemplate  mybatis db연결을 위한 -->
-  <bean id="myBatisSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+<!--   <bean id="myBatisSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
     <constructor-arg index="0" ref="myBatisSqlSessionFactory" />
-  </bean>
+  </bean> -->
    
   <!-- tx annotation -->
 	<tx:annotation-driven transaction-manager="myBatisTransactionManager"/> 
