@@ -67,4 +67,8 @@
  <!--   <bean id="persistenceExceptionTranslationPostProcessor"
       class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" /> -->
  
+ 
+ <!-- mybatis 사용 -->
+ 
+ 
 </beans>

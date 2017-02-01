@@ -11,10 +11,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@XmlRootElement(name = "user")
 @Entity
 @Table(name="fd_user")
 public class User implements Serializable {
@@ -47,13 +51,14 @@ public class User implements Serializable {
         joinColumns = @JoinColumn(name="user_id"),
         inverseJoinColumns = @JoinColumn(name="user_id"))*/
     private Collection<UserRole> roles;
-    
+    @XmlElement
     public Long getUserId() {
       return userId;
     }
     public void setUserId(Long userId) {
       this.userId = userId;
     }
+    @XmlElement
     public String getUserName() {
       return userName;
     }
@@ -106,6 +111,8 @@ public class User implements Serializable {
     public void setSocialUserId(Long socialUserId) {
       this.socialUserId = socialUserId;
     }
+    
+    @JsonIgnore
     @Override
     public String toString() {
       return "User [userId=" + userId + ", userName=" + userName + ", password=" + password + ", email=" + email

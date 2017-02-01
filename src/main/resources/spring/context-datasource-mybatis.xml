@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+   xmlns:tx="http://www.springframework.org/schema/tx"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans.xsd
+     http://www.springframework.org/schema/data/jpa
+     http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+     http://www.springframework.org/schema/tx
+		 http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<bean id="myBatisTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	    <property name="dataSource" ref="myBatisDataSource" />
+	</bean>
+	
+  <bean id="myBatisDataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="#{jdbc['exam.datasource.driver.class']}" />
+		<property name="url" value="#{jdbc['exam.datasource.url']}" />
+		<property name="username" value="#{jdbc['exam.datasource.username']}" />
+		<property name="password" value="#{jdbc['exam.datasource.password']}" />
+	</bean>
+ 
+  <!-- mapper 자동 등록 -->
+  <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+    <property name="basePackage" value="com.exam.security.mybatis.mapper"/>
+    <property name="sqlSessionFactoryBeanName" value="myBatisSqlSessionFactory" />
+    <property name="sqlSessionTemplateBeanName" value="myBatisSqlSessionTemplate"/>
+    <!-- <property name="nameGenerator" ref="FQDNBeanNameGenerator"/> -->
+  </bean>
+
+  <!-- mybatis sessionFactory mybatis db연결을 위한 -->
+  <bean id="myBatisSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="dataSource" ref="myBatisDataSource" />											<!-- dataSource 이용 -->
+    <property name="configLocation" value="classpath:config/mybatis-configuration.xml"/>   <!-- configuration.xml 을 등록 -->
+    <property name="mapperLocations" value="classpath:mybatis/mappers/*.xml"/>
+  </bean>
+
+  <!--  mybatis sqlSessionTemplate  mybatis db연결을 위한 -->
+  <bean id="myBatisSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg index="0" ref="myBatisSqlSessionFactory" />
+  </bean>
+   
+  <!-- tx annotation -->
+	<tx:annotation-driven transaction-manager="myBatisTransactionManager"/> 
+		
+</beans>

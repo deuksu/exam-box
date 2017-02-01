@@ -48,6 +48,7 @@
     <param-value>
          classpath:spring/context-common.xml
         ,classpath:spring/context-datasource-jpa.xml
+        ,classpath:spring/context-datasource-mybatis.xml
         ,classpath:spring/context-security.xml
   </param-value>
   </context-param>
