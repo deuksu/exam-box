@@ -22,4 +22,8 @@ exam_seurity_master :: 2018.01.08 08:40
 exam_seurity_master_local :: 2018.01.08 08:41
 
 
+<<<<<<< HEAD
 exam_security_y_local :: 2018.01.08 08:46
+=======
+exam_seurity_master_local :: 2018.01.08 08:45
+>>>>>>> refs/remotes/origin/master
